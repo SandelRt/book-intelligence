@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
+/* ─── Warm, writer-first color system ───────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds — warm charcoal, not cold blue-black */
+  --background:   #0f0d0b;
+  --surface:      #141210;
+  --surface-2:    #1c1916;
+  --surface-3:    #232018;
+
+  /* Borders */
+  --border:       rgba(255, 248, 235, 0.08);
+  --border-warm:  rgba(180, 140, 80, 0.18);
+
+  /* Text — warm parchment, not cool white */
+  --text-primary:   #e6e0d4;
+  --text-secondary: #9a9082;
+  --text-muted:     #5a5244;
+  --text-faint:     #3a342c;
+
+  /* Accent — warm violet -> switched to Fidget Science Neon Green */
+  --accent:       #25E892;
+  --accent-dim:   rgba(37, 232, 146, 0.12);
+  --accent-border: rgba(37, 232, 146, 0.22);
+  --accent-primary: #25E892;
+
+  /* Physical Depth Shadows (Dark Mode Default) */
+  --shadow-dark: rgba(0, 0, 0, 0.8);
+  --shadow-light: rgba(54, 59, 66, 0.4);
+
+  /* Semantic */
+  --success:      #86b97a;
+  --warning:      #c9a55a;
+  --danger:       #c97a7a;
+
+  /* Writing surface */
+  --prose-bg:     #0f0d0b;
+  --prose-text:   #ddd6c8;
+  --prose-muted:  #4a4238;
+
+  /* Direction panel — warm amber tones */
+  --direction-bg:     #161310;
+  --direction-border: rgba(180, 140, 80, 0.2);
+
+  /* Fonts */
+  --font-ui:    system-ui, -apple-system, sans-serif;
+  --font-prose: var(--font-prose, Georgia, 'Times New Roman', serif);
+
+  /* Transitions */
+  --ease-panel: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dur-panel:  220ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Writing surface ───────────────────────────────────────────────────── */
+.prose-editor {
+  font-family: var(--font-prose);
+  font-size: 20px;
+  line-height: 1.9;
+  color: var(--prose-text);
+  max-width: 640px;
+  letter-spacing: 0.01em;
+}
+
+.tiptap {
+  outline: none;
+  min-height: 60vh;
+}
+
+.tiptap p {
+  margin-bottom: 1.4em;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--prose-muted);
+  pointer-events: none;
+  float: left;
+  height: 0;
+  font-style: italic;
+}
+
+.tiptap h1, .tiptap h2, .tiptap h3 {
+  font-family: var(--font-prose);
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  color: var(--text-primary);
+}
+
+/* ─── Panel transitions ─────────────────────────────────────────────────── */
+.panel-left {
+  transform: translateX(-100%);
+  transition: transform var(--dur-panel) var(--ease-panel),
+              opacity var(--dur-panel) ease;
+  opacity: 0;
+}
+.panel-left.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.panel-right {
+  transform: translateX(100%);
+  transition: transform var(--dur-panel) var(--ease-panel),
+              opacity var(--dur-panel) ease;
+  opacity: 0;
+}
+.panel-right.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* ─── Word count ambient fade ───────────────────────────────────────────── */
+.wordcount-ambient {
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.wordcount-ambient.visible {
+  opacity: 1;
+}
+
+/* ─── Idle affordance (···) ─────────────────────────────────────────────── */
+.idle-dot {
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+.idle-dot.visible {
+  opacity: 0.35;
+}
+.idle-dot:hover {
+  opacity: 0.7 !important;
+}
+
+/* ─── Autosave pulse ────────────────────────────────────────────────────── */
+@keyframes save-pulse {
+  0%   { opacity: 0.2; transform: scale(0.8); }
+  50%  { opacity: 0.8; transform: scale(1.15); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+.saving { animation: save-pulse 1s ease forwards; }
+
+/* ─── Canvas dim overlay ────────────────────────────────────────────────── */
+.canvas-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 13, 11, 0);
+  pointer-events: none;
+  transition: background 300ms ease;
+  z-index: 10;
+}
+.canvas-dim.active {
+  background: rgba(15, 13, 11, 0.45);
+  pointer-events: auto;
+}
+
+/* ─── Ambient vignette on writing surface ───────────────────────────────── */
+.writing-vignette {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, transparent 60%, rgba(10, 8, 6, 0.3) 100%);
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Fidget Science Physical Depth & Micro-Animations ──────────────────── */
+.depth-out {
+  box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.depth-out:hover {
+  transform: scale(1.02);
+}
+.depth-out:active {
+  transform: scale(0.95);
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+}
+
+.depth-in {
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.interactive-fidget {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }

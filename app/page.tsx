@@ -1,65 +1,78 @@
-import Image from "next/image";
+import Link from 'next/link'
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div
+      className="min-h-full flex flex-col items-center justify-center px-6"
+      style={{ background: 'var(--background)' }}
+    >
+      <div className="max-w-xl w-full text-center space-y-10">
+
+        {/* Badge */}
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs"
+          style={{
+            background: 'var(--accent-dim)',
+            color: 'var(--accent)',
+            border: '1px solid var(--accent-border)',
+          }}
+        >
+          Early access
+        </div>
+
+        {/* Headline */}
+        <div className="space-y-4">
+          <h1
+            className="text-5xl font-normal leading-tight tracking-tight"
+            style={{ fontFamily: 'var(--font-prose)', color: 'var(--text-primary)' }}
+          >
+            Write until you disappear<br />
+            <em style={{ color: 'var(--text-secondary)' }}>into the story.</em>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p
+            className="text-base leading-relaxed max-w-sm mx-auto"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            An AI writing partner that learns your voice over time — catches what&apos;s
+            generic, finds direction when you&apos;re stuck, and stays out of the way
+            when you&apos;re not.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Features */}
+        <div className="grid grid-cols-3 gap-3 text-left text-sm">
+          {[
+            { label: 'Writer DNA', desc: 'Learns your taste. Filters everything through it.' },
+            { label: 'Structural lens', desc: 'Spots when a chapter doesn\'t sound like you.' },
+            { label: 'Direction engine', desc: 'Gets you moving. Disappears when you are.' },
+          ].map((f) => (
+            <div
+              key={f.label}
+              className="p-4 rounded-xl"
+              style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <p className="font-medium text-xs mb-1.5" style={{ color: 'var(--text-primary)' }}>
+                {f.label}
+              </p>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                {f.desc}
+              </p>
+            </div>
+          ))}
         </div>
-      </main>
+
+        {/* CTA */}
+        <Link
+          href="/login"
+          className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium text-white transition-all hover:opacity-85"
+          style={{ background: 'var(--accent)' }}
+        >
+          Start writing
+        </Link>
+      </div>
     </div>
-  );
+  )
 }
