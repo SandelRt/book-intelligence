@@ -28,13 +28,17 @@ export default async function RoomsPage() {
 
         <form action={createRoom} className="flex gap-2 items-center">
           <input type="text" name="name" placeholder="Room name" className="px-3 py-1.5 text-sm rounded-lg border focus:outline-none focus:border-[var(--accent-primary)]" required style={{ background: 'var(--surface)', borderColor: 'var(--border)' }} />
+          <select name="visibility" className="px-3 py-1.5 text-sm rounded-lg border focus:outline-none focus:border-[var(--accent-primary)]" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
           <TactileButton
             type="submit"
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-background"
             style={{ background: 'var(--accent-primary)' }}
           >
             <Plus size={16} />
-            Create Room
+            Create
           </TactileButton>
         </form>
       </div>

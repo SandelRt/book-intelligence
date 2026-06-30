@@ -103,6 +103,7 @@ export interface Room {
   room_type: string
   host_user_id: string
   visibility: 'public' | 'private'
+  invite_code?: string | null
   ai_host_enabled: boolean
   created_at: string
 }

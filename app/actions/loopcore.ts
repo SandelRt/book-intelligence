@@ -14,6 +14,11 @@ export async function createRoom(formData: FormData) {
   const room_type = (formData.get('room_type') as string) || 'writing_sprint'
   const visibility = (formData.get('visibility') as string) || 'public'
 
+  let invite_code = null
+  if (visibility === 'private') {
+    invite_code = Math.random().toString(36).substring(2, 8).toUpperCase()
+  }
+
   const { data: room, error } = await supabase
     .from('rooms')
     .insert({
@@ -22,6 +27,7 @@ export async function createRoom(formData: FormData) {
       room_type,
       host_user_id: user.id,
       visibility,
+      invite_code,
       ai_host_enabled: true
     })
     .select()
@@ -39,10 +45,15 @@ export async function createRoom(formData: FormData) {
   redirect(`/rooms/${room.id}`)
 }
 
-export async function joinRoom(roomId: string) {
+export async function joinRoom(roomId: string, inviteCode?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
+
+  const { data: room } = await supabase.from('rooms').select('visibility, invite_code').eq('id', roomId).single()
+  if (room?.visibility === 'private' && room.invite_code !== inviteCode) {
+    return { error: 'Invalid or missing invite code' }
+  }
 
   const { error } = await supabase.from('room_members').insert({
     room_id: roomId,
