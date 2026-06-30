@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Lightbulb, X, Save } from 'lucide-react'
-import { playClick, playZip } from '@/lib/fidget'
+import { playThock, playZip } from '@/lib/audio'
 
 export default function QuickIdeaButton() {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,7 +22,7 @@ export default function QuickIdeaButton() {
       setSaved(false)
       setIdea('')
     } else {
-      playClick()
+      playThock()
     }
     setIsOpen(!isOpen)
   }

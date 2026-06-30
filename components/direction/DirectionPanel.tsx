@@ -51,16 +51,8 @@ export default function DirectionPanel({ chapter, manuscript, userId, onClose }:
         const { done, value } = await reader.read()
         if (done) break
         const chunk = decoder.decode(value, { stream: true })
-        for (const line of chunk.split('\n')) {
-          if (!line.trim()) continue
-          try {
-            const data = JSON.parse(line)
-            if (data.type === 'content_block_delta' && data.delta?.text) {
-              suggestionRef.current += data.delta.text
-              setResponse(suggestionRef.current)
-            }
-          } catch { /* partial chunk */ }
-        }
+        suggestionRef.current += chunk
+        setResponse(suggestionRef.current)
       }
     } catch (e: unknown) {
       if (e instanceof Error && e.name === 'AbortError') return

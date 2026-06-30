@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import TactileButton from '@/components/TactileButton'
+import { TactileButton } from '@/components/Tactile'
 
 export default function LandingPage() {
   return (
