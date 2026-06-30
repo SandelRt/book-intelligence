@@ -5,6 +5,7 @@ import type { Session, Goal } from '@/types'
 import { Timer, Flag } from 'lucide-react'
 import FocusEntrainment from '@/components/FocusEntrainment'
 import SessionCheckInForm from '@/components/SessionCheckInForm'
+import SprintTimer from '@/components/SprintTimer'
 
 export default async function LiveSessionPage({ params }: { params: { sessionId: string } }) {
   const supabase = await createClient()
@@ -34,9 +35,8 @@ export default async function LiveSessionPage({ params }: { params: { sessionId:
           <h1 className="font-bold text-xl tracking-tight" style={{ color: 'var(--text-primary)' }}>{session.title}</h1>
           <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: 'var(--text-muted)' }}>Status: {session.status === 'live' ? <span style={{ color: 'var(--accent-primary)' }}>LIVE</span> : 'Waiting for host to start'}</p>
         </div>
-        <div className="flex items-center gap-2 text-4xl font-mono font-bold" style={{ color: 'var(--text-primary)' }}>
-          <Timer size={32} style={{ color: 'var(--accent-primary)' }} />
-          {session.duration_minutes}:00
+        <div>
+          <SprintTimer initialMinutes={session.duration_minutes || 25} />
         </div>
       </div>
 

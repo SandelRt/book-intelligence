@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { GoogleGenAI } from '@google/genai'
 
 function describeVoice(signals: {
   avg_sentence_len: number
@@ -67,42 +68,34 @@ export async function POST(req: Request) {
   // Default: neutral (0.5) when no baseline; slightly below threshold so we don't false-positive
   let genericnessScore = hasBaseline ? 0.4 : 0.35
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY
+  const geminiKey = process.env.GEMINI_API_KEY
 
-  if (anthropicKey) {
+  if (geminiKey) {
     try {
-      const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': anthropicKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-3-haiku-20240307',
-          max_tokens: 100,
-          system: `You are a writing coach measuring voice distinctiveness.
+      const ai = new GoogleGenAI({ apiKey: geminiKey })
+      const res = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `Writer's established voice: ${voiceDesc}\n\nChapter: "${chapterTitle}"\nExcerpt:\n${cleanText}\n\nRate genericness 0.0–1.0.`,
+        config: {
+          systemInstruction: `You are a writing coach measuring voice distinctiveness.
 Compare a chapter excerpt to the writer's established voice and rate how flat or generic it sounds.
 0.0 = unmistakably this writer's distinctive voice. 1.0 = could have been written by anyone — flat, voiceless.
 Return ONLY valid JSON: {"score": 0.0}`,
-          messages: [{ 
-            role: 'user', 
-            content: `Writer's established voice: ${voiceDesc}\n\nChapter: "${chapterTitle}"\nExcerpt:\n${cleanText}\n\nRate genericness 0.0–1.0.` 
-          }]
-        })
+          temperature: 0.1,
+          responseMimeType: 'application/json'
+        }
       })
 
-      if (anthropicRes.ok) {
-        const data = await anthropicRes.json()
-        const raw = data.content?.[0]?.text?.trim() || ''
-        const parsed = JSON.parse(raw)
-        const s = Number(parsed.score)
-        if (!isNaN(s) && s >= 0 && s <= 1) {
-          // Cap score at 0.65 when we have no baseline — avoid false positives on new writers
-          genericnessScore = hasBaseline ? s : Math.min(s, 0.65)
-        }
+      const raw = res.text || ''
+      const parsed = JSON.parse(raw)
+      const s = Number(parsed.score)
+      if (!isNaN(s) && s >= 0 && s <= 1) {
+        // Cap score at 0.65 when we have no baseline — avoid false positives on new writers
+        genericnessScore = hasBaseline ? s : Math.min(s, 0.65)
       }
-    } catch { /* keep default */ }
+    } catch (e) { 
+      console.error('Gemini genericness error:', e) 
+    }
   }
 
   await supabase

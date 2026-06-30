@@ -27,7 +27,7 @@ export default function AppHeader() {
   return (
     <header className="flex items-center justify-between px-6 py-3 shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
       {/* Brand */}
-      <div className="w-1/3 flex items-center">
+      <div className="w-1/3 flex items-center gap-6">
         <Link href={isCommunity ? "/rooms" : "/dashboard"} className="flex items-center gap-2 transition-opacity hover:opacity-80">
           {isCommunity ? (
             <Users size={18} style={{ color: 'var(--accent)' }} />
@@ -38,6 +38,11 @@ export default function AppHeader() {
             {isCommunity ? 'LoopReads' : 'Studio'}
           </span>
         </Link>
+        {!isCommunity && (
+          <Link href="/ideas" className="text-xs font-medium transition-colors hover:opacity-70" style={{ color: 'var(--text-secondary)' }}>
+            Ideas Vault
+          </Link>
+        )}
       </div>
 
       {/* Mode Switcher */}

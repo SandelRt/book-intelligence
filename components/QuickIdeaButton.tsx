@@ -1,40 +1,27 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Lightbulb, X, Save, Archive, Trash2 } from 'lucide-react'
+import { Lightbulb, X, Save, ArrowRight } from 'lucide-react'
 import { playThock, playZip } from '@/lib/audio'
-
-type Idea = {
-  id: number
-  text: string
-  date: string
-}
+import Link from 'next/link'
 
 export default function QuickIdeaButton() {
   const [isOpen, setIsOpen] = useState(false)
   const [idea, setIdea] = useState('')
   const [saved, setSaved] = useState(false)
-  const [viewingVault, setViewingVault] = useState(false)
-  const [ideas, setIdeas] = useState<Idea[]>([])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    if (isOpen && !viewingVault) {
+    if (isOpen) {
       textareaRef.current?.focus()
     }
-  }, [isOpen, viewingVault])
-
-  const loadIdeas = () => {
-    const existing = JSON.parse(localStorage.getItem('loopreads_ideas') || '[]')
-    setIdeas(existing.reverse())
-  }
+  }, [isOpen])
 
   const toggleOpen = () => {
     if (!isOpen) {
       playZip()
       setSaved(false)
       setIdea('')
-      setViewingVault(false)
     } else {
       playThock()
     }
@@ -53,21 +40,7 @@ export default function QuickIdeaButton() {
     setTimeout(() => {
       setIsOpen(false)
       setIdea('')
-    }, 1000)
-  }
-
-  const handleDelete = (id: number) => {
-    playZip()
-    const updated = ideas.filter(i => i.id !== id)
-    localStorage.setItem('loopreads_ideas', JSON.stringify(updated.reverse()))
-    setIdeas(updated)
-  }
-
-  const openVault = () => {
-    playThock()
-    loadIdeas()
-    setViewingVault(true)
-    setSaved(false)
+    }, 1500)
   }
 
   return (
@@ -93,60 +66,30 @@ export default function QuickIdeaButton() {
               <div className="flex items-center gap-2">
                 <Lightbulb size={16} style={{ color: 'var(--accent)' }} />
                 <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
-                  {viewingVault ? 'Ideas Vault' : 'Jot an idea'}
+                  Jot an idea
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                {!viewingVault && (
-                  <button onClick={openVault} className="p-1.5 rounded-md transition-colors hover:bg-black/10" style={{ color: 'var(--text-muted)' }} title="View Vault">
-                    <Archive size={14} />
-                  </button>
-                )}
-                <button onClick={toggleOpen} className="p-1 rounded-md transition-colors hover:bg-black/10" style={{ color: 'var(--text-muted)' }}>
-                  <X size={16} />
-                </button>
-              </div>
+              <button onClick={toggleOpen} className="p-1 rounded-md transition-colors hover:bg-black/10" style={{ color: 'var(--text-muted)' }}>
+                <X size={16} />
+              </button>
             </div>
             
-            <div className="p-4" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-              {viewingVault ? (
-                <div className="space-y-4">
-                  {ideas.length === 0 ? (
-                    <div className="text-center py-8 text-sm" style={{ color: 'var(--text-muted)' }}>
-                      No ideas saved yet.
-                    </div>
-                  ) : (
-                    ideas.map((item) => (
-                      <div key={item.id} className="p-3 rounded-lg relative group" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                        <p className="text-sm whitespace-pre-wrap pr-6" style={{ color: 'var(--text-primary)' }}>{item.text}</p>
-                        <p className="text-[10px] mt-2" style={{ color: 'var(--text-muted)' }}>
-                          {new Date(item.date).toLocaleDateString()} at {new Date(item.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        </p>
-                        <button 
-                          onClick={() => handleDelete(item.id)}
-                          className="absolute top-2 right-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 text-red-500"
-                          title="Delete Idea"
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                  <button
-                    onClick={() => { playThock(); setViewingVault(false) }}
-                    className="w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-80 mt-2"
-                    style={{ background: 'var(--surface-3)', color: 'var(--text-primary)' }}
-                  >
-                    Back to writing
-                  </button>
-                </div>
-              ) : saved ? (
+            <div className="p-4">
+              {saved ? (
                 <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
                     <Save size={24} />
                   </div>
                   <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Saved!</p>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Stored in your local vault.</p>
+                  <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>Stored in your local vault.</p>
+                  <Link 
+                    href="/ideas"
+                    onClick={toggleOpen}
+                    className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+                    style={{ color: 'var(--accent)' }}
+                  >
+                    Open Ideas Vault <ArrowRight size={14} />
+                  </Link>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -162,7 +105,14 @@ export default function QuickIdeaButton() {
                     }}
                   />
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-faint)' }}>Press ⌘+Enter to save</span>
+                    <Link 
+                      href="/ideas"
+                      onClick={toggleOpen}
+                      className="text-xs font-medium hover:underline transition-all" 
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
+                      View Ideas Vault
+                    </Link>
                     <button
                       onClick={handleSave}
                       disabled={!idea.trim()}
