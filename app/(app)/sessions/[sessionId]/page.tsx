@@ -6,12 +6,13 @@ import { Clock, Users } from 'lucide-react'
 import GoalFidget from '@/components/GoalFidget'
 import { TactileButton } from '@/components/Tactile'
 
-export default async function SessionLobbyPage({ params }: { params: { sessionId: string } }) {
+export default async function SessionSetupPage({ params }: { params: Promise<{ sessionId: string }> }) {
+  const resolvedParams = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: sessionData } = await supabase.from('sessions').select('*').eq('id', params.sessionId).single()
+  const { data: sessionData } = await supabase.from('sessions').select('*').eq('id', resolvedParams.sessionId).single()
   if (!sessionData) return notFound()
   const session = sessionData as Session
 

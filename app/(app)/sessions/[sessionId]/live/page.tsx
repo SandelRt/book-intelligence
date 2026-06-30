@@ -7,12 +7,13 @@ import FocusEntrainment from '@/components/FocusEntrainment'
 import SessionCheckInForm from '@/components/SessionCheckInForm'
 import SprintTimer from '@/components/SprintTimer'
 
-export default async function LiveSessionPage({ params }: { params: { sessionId: string } }) {
+export default async function LiveSessionPage({ params }: { params: Promise<{ sessionId: string }> }) {
+  const resolvedParams = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: sessionData } = await supabase.from('sessions').select('*').eq('id', params.sessionId).single()
+  const { data: sessionData } = await supabase.from('sessions').select('*').eq('id', resolvedParams.sessionId).single()
   if (!sessionData) return notFound()
   const session = sessionData as Session
 

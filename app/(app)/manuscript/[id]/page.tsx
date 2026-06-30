@@ -8,7 +8,7 @@ export default async function ManuscriptPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const { id } = await params
+  const resolvedParams = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -16,7 +16,7 @@ export default async function ManuscriptPage({
   const { data: manuscript } = await supabase
     .from('manuscripts')
     .select('*')
-    .eq('id', id)
+    .eq('id', resolvedParams.id)
     .eq('user_id', user.id)
     .single()
 
@@ -25,7 +25,7 @@ export default async function ManuscriptPage({
   const { data: chapters } = await supabase
     .from('chapters')
     .select('*')
-    .eq('manuscript_id', id)
+    .eq('manuscript_id', resolvedParams.id)
     .order('order_idx')
 
   return (

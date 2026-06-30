@@ -5,12 +5,13 @@ import type { Room, Session } from '@/types'
 import { CalendarPlus, Play, CheckCircle } from 'lucide-react'
 import { TactileButton, TactileCardLink } from '@/components/Tactile'
 
-export default async function RoomDetailPage({ params }: { params: { roomId: string } }) {
+export default async function RoomDetailPage({ params }: { params: Promise<{ roomId: string }> }) {
+  const resolvedParams = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: roomData } = await supabase.from('rooms').select('*').eq('id', params.roomId).single()
+  const { data: roomData } = await supabase.from('rooms').select('*').eq('id', resolvedParams.roomId).single()
   if (!roomData) return notFound()
   const room = roomData as Room
 
