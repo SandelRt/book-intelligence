@@ -4,6 +4,7 @@ import { signOut } from '@/app/actions'
 import Link from 'next/link'
 import { BookOpen, LogOut } from 'lucide-react'
 import RippleCanvas from '@/components/RippleCanvas'
+import QuickIdeaButton from '@/components/QuickIdeaButton'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -34,6 +35,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </form>
         </header>
         <main className="flex-1 overflow-hidden">{children}</main>
+        <QuickIdeaButton />
       </RippleCanvas>
     </div>
   )
