@@ -2,30 +2,30 @@
 
 /* ─── Warm, writer-first color system ───────────────────────────────────── */
 :root {
-  /* Backgrounds — warm charcoal, not cold blue-black */
-  --background:   #0f0d0b;
-  --surface:      #141210;
-  --surface-2:    #1c1916;
-  --surface-3:    #232018;
+  /* Backgrounds — warm paper/parchment */
+  --background:   #fdfbf7;
+  --surface:      #f5f2eb;
+  --surface-2:    #ebe6dc;
+  --surface-3:    #e0d9cb;
 
   /* Borders */
-  --border:       rgba(255, 248, 235, 0.08);
-  --border-warm:  rgba(180, 140, 80, 0.18);
+  --border:       rgba(43, 40, 36, 0.08);
+  --border-warm:  rgba(180, 140, 80, 0.25);
 
-  /* Text — warm parchment, not cool white */
-  --text-primary:   #e6e0d4;
-  --text-secondary: #9a9082;
-  --text-muted:     #5a5244;
-  --text-faint:     #3a342c;
+  /* Text — deep charcoal/ink */
+  --text-primary:   #2b2824;
+  --text-secondary: #5c554d;
+  --text-muted:     #8c8477;
+  --text-faint:     #bdb5a8;
 
   /* Mode Accents */
-  --accent-loopreads: #25E892;
-  --accent-loopreads-dim: rgba(37, 232, 146, 0.12);
-  --accent-loopreads-border: rgba(37, 232, 146, 0.22);
+  --accent-loopreads: #0b9e59;
+  --accent-loopreads-dim: rgba(11, 158, 89, 0.12);
+  --accent-loopreads-border: rgba(11, 158, 89, 0.22);
   
-  --accent-studio: #f9a826;
-  --accent-studio-dim: rgba(249, 168, 38, 0.12);
-  --accent-studio-border: rgba(249, 168, 38, 0.22);
+  --accent-studio: #d97706;
+  --accent-studio-dim: rgba(217, 119, 6, 0.12);
+  --accent-studio-border: rgba(217, 119, 6, 0.22);
 
   /* Current Active Accent (defaults to Studio) */
   --accent:       var(--accent-studio);
@@ -33,22 +33,22 @@
   --accent-border: var(--accent-studio-border);
   --accent-primary: var(--accent);
 
-  /* Physical Depth Shadows (Dark Mode Default) */
-  --shadow-dark: rgba(0, 0, 0, 0.8);
-  --shadow-light: rgba(54, 59, 66, 0.4);
+  /* Physical Depth Shadows (Light Mode Default) */
+  --shadow-dark: rgba(200, 190, 180, 0.7);
+  --shadow-light: rgba(255, 255, 255, 0.8);
 
   /* Semantic */
-  --success:      #86b97a;
-  --warning:      #c9a55a;
-  --danger:       #c97a7a;
+  --success:      #16a34a;
+  --warning:      #ca8a04;
+  --danger:       #dc2626;
 
   /* Writing surface */
-  --prose-bg:     #0f0d0b;
-  --prose-text:   #ddd6c8;
-  --prose-muted:  #4a4238;
+  --prose-bg:     #fdfbf7;
+  --prose-text:   #1a1918;
+  --prose-muted:  #a39b8d;
 
   /* Direction panel — warm amber tones */
-  --direction-bg:     #161310;
+  --direction-bg:     #f8f5ee;
   --direction-border: rgba(180, 140, 80, 0.2);
 
   /* Fonts */
@@ -69,6 +69,8 @@ body {
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Subtle SVG paper texture */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 /* ─── Writing surface ───────────────────────────────────────────────────── */
@@ -176,7 +178,7 @@ body {
 /* ─── Ambient vignette on writing surface ───────────────────────────────── */
 .writing-vignette {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 40%, transparent 60%, rgba(10, 8, 6, 0.3) 100%);
+    radial-gradient(ellipse 80% 60% at 50% 40%, transparent 60%, rgba(200, 190, 180, 0.2) 100%);
   pointer-events: none;
   position: absolute;
   inset: 0;
