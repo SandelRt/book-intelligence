@@ -11,6 +11,18 @@ const lora = Lora({
 export const metadata: Metadata = {
   title: 'Book Intelligence',
   description: 'Your writing, amplified by AI that learns you.',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Book Intel',
+  },
+}
+
+export const viewport = {
+  themeColor: '#F4F1EA',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
