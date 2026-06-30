@@ -6,6 +6,7 @@ import { Timer, Flag } from 'lucide-react'
 import FocusEntrainment from '@/components/FocusEntrainment'
 import SessionCheckInForm from '@/components/SessionCheckInForm'
 import SprintTimer from '@/components/SprintTimer'
+import LiveRoomDashboard from '@/components/LiveRoomDashboard'
 
 export default async function LiveSessionPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const resolvedParams = await params
@@ -21,11 +22,16 @@ export default async function LiveSessionPage({ params }: { params: Promise<{ se
     redirect(`/sessions/${session.id}/summary`)
   }
 
-  const { data: goalData } = await supabase.from('goals').select('*').eq('session_id', session.id).eq('user_id', user.id).single()
-  if (!goalData) {
+  const { data: allGoalsData } = await supabase.from('goals').select('*').eq('session_id', session.id)
+  const initialGoals = allGoalsData || []
+  const goal = initialGoals.find(g => g.user_id === user.id)
+  
+  if (!goal) {
     redirect(`/sessions/${session.id}`)
   }
-  const goal = goalData as Goal
+
+  const { data: profile } = await supabase.from('writer_profiles').select('display_name').eq('user_id', user.id).single()
+  const currentUserName = profile?.display_name || user.email?.split('@')[0] || 'Writer'
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 h-full flex flex-col space-y-8 relative">
@@ -41,7 +47,7 @@ export default async function LiveSessionPage({ params }: { params: Promise<{ se
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Goal Card */}
         <div className="p-8 rounded-[32px] space-y-4 depth-out flex flex-col items-center justify-center text-center" style={{ background: 'var(--surface)' }}>
           <div className="flex items-center gap-2 font-bold uppercase tracking-widest text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -65,6 +71,15 @@ export default async function LiveSessionPage({ params }: { params: Promise<{ se
             checkInAction={checkInSession.bind(null, session.id)}
           />
         </div>
+      </div>
+
+      <div className="mt-8 pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
+        <LiveRoomDashboard 
+          sessionId={session.id}
+          currentUserId={user.id}
+          currentUserName={currentUserName}
+          initialGoals={initialGoals}
+        />
       </div>
     </div>
   )
