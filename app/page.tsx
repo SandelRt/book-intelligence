@@ -37,7 +37,7 @@ export default function LandingPage() {
           <div className="pt-4">
             <Link href="/login">
               <TactileButton className="px-8 py-3.5 text-sm">
-                Start a session
+                Start A Live Session
               </TactileButton>
             </Link>
           </div>
@@ -81,9 +81,37 @@ export default function LandingPage() {
             
             <Link href="/login" className="block mt-4">
               <button className="w-full py-3 rounded-xl text-xs font-bold transition-opacity hover:opacity-80" style={{ background: 'var(--accent-dim)', color: 'var(--accent)', border: '1px solid var(--accent-border)' }}>
-                Experience a real session →
+                Start A Live Session →
               </button>
             </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-3xl mx-auto w-full mt-24 space-y-8">
+        <h3 className="text-2xl font-bold text-center" style={{ color: 'var(--text-primary)' }}>Frequently Asked Questions</h3>
+        
+        <div className="space-y-6">
+          <div className="p-6 rounded-2xl border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>I don&apos;t want AI writing my book for me.</h4>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              The AI coach doesn&apos;t write for you; it analyzes your &apos;Writer DNA&apos; to offer stylistic feedback and directional prompts that keep you in the driver&apos;s seat.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>I&apos;ll just get distracted by chatting with other writers.</h4>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              The Cheer Box is strictly ephemeral and designed for pre/post sprint hype, not mid-sprint procrastination. When the timer runs, you write.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>I don&apos;t write linearly, so word counts don&apos;t work for me.</h4>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              Live sessions allow you to set flexible target goals—track words, chapters edited, or time spent focused. Word count is just one of many ways to measure progress.
+            </p>
           </div>
         </div>
       </div>

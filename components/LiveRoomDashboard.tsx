@@ -78,7 +78,7 @@ export default function LiveRoomDashboard({
       table: 'goals',
       filter: `session_id=eq.${sessionId}`
     }, (payload) => {
-      setGoals(prev => prev.map(g => g.id === payload.new.id ? payload.new : g))
+      setGoals(prev => prev.map(g => g.id === payload.new.id ? payload.new as Goal : g))
     })
 
     channel.subscribe(async (status) => {

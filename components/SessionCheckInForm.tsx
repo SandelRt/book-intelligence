@@ -5,6 +5,8 @@ import { playDopamineChime, playThock } from '@/lib/audio'
 import { TactileButton } from '@/components/Tactile'
 import { CheckCircle } from 'lucide-react'
 
+import confetti from 'canvas-confetti'
+
 export default function SessionCheckInForm({ 
   sessionId, 
   targetAmount, 
@@ -17,8 +19,14 @@ export default function SessionCheckInForm({
   checkInAction: (formData: FormData) => void
 }) {
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = () => {
     playDopamineChime()
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#00e676', '#69f0ae', '#b9f6ca'] // Greenish success colors
+    })
     // Let the form submit natively to trigger the server action
   }
 
