@@ -3,6 +3,7 @@ import { createManuscript } from '@/app/actions'
 import Link from 'next/link'
 import { Plus, BookOpen, Clock } from 'lucide-react'
 import { TactileButton, TactileCardLink } from '@/components/Tactile'
+import ProgressDashboard from '@/components/ProgressDashboard'
 import type { Manuscript } from '@/types'
 
 export default async function DashboardPage() {
@@ -47,7 +48,9 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between">
+      <ProgressDashboard />
+
+      <div className="flex items-center justify-between mt-8">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Your manuscripts</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
