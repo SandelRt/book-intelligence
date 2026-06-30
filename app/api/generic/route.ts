@@ -1,7 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { GoogleGenAI } from '@google/genai'
-
-const ai = new GoogleGenAI({})
 
 function describeVoice(signals: {
   avg_sentence_len: number
@@ -70,33 +67,43 @@ export async function POST(req: Request) {
   // Default: neutral (0.5) when no baseline; slightly below threshold so we don't false-positive
   let genericnessScore = hasBaseline ? 0.4 : 0.35
 
-  try {
-    const msg = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: `Writer's established voice: ${voiceDesc}
+  const anthropicKey = process.env.ANTHROPIC_API_KEY
 
-Chapter: "${chapterTitle}"
-Excerpt:
-${cleanText}
-
-Rate genericness 0.0–1.0.`,
-      config: {
-        systemInstruction: `You are a writing coach measuring voice distinctiveness.
+  if (anthropicKey) {
+    try {
+      const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': anthropicKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-haiku-20240307',
+          max_tokens: 100,
+          system: `You are a writing coach measuring voice distinctiveness.
 Compare a chapter excerpt to the writer's established voice and rate how flat or generic it sounds.
 0.0 = unmistakably this writer's distinctive voice. 1.0 = could have been written by anyone — flat, voiceless.
 Return ONLY valid JSON: {"score": 0.0}`,
-        responseMimeType: "application/json"
-      }
-    })
+          messages: [{ 
+            role: 'user', 
+            content: `Writer's established voice: ${voiceDesc}\n\nChapter: "${chapterTitle}"\nExcerpt:\n${cleanText}\n\nRate genericness 0.0–1.0.` 
+          }]
+        })
+      })
 
-    const raw = msg.text?.trim() || ''
-    const parsed = JSON.parse(raw)
-    const s = Number(parsed.score)
-    if (!isNaN(s) && s >= 0 && s <= 1) {
-      // Cap score at 0.65 when we have no baseline — avoid false positives on new writers
-      genericnessScore = hasBaseline ? s : Math.min(s, 0.65)
-    }
-  } catch { /* keep default */ }
+      if (anthropicRes.ok) {
+        const data = await anthropicRes.json()
+        const raw = data.content?.[0]?.text?.trim() || ''
+        const parsed = JSON.parse(raw)
+        const s = Number(parsed.score)
+        if (!isNaN(s) && s >= 0 && s <= 1) {
+          // Cap score at 0.65 when we have no baseline — avoid false positives on new writers
+          genericnessScore = hasBaseline ? s : Math.min(s, 0.65)
+        }
+      }
+    } catch { /* keep default */ }
+  }
 
   await supabase
     .from('chapters')

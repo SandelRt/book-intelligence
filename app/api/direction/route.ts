@@ -1,8 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { GoogleGenAI } from '@google/genai'
 import { getWriterDNASummary } from '@/lib/dna/preferences'
-
-const ai = new GoogleGenAI({})
 
 export async function POST(req: Request) {
   const supabase = await createClient()
@@ -54,25 +51,70 @@ ${chapterContent ? chapterContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').
 
 Give them 3 ways forward. Be specific, warm, brief.`
 
-  const responseStream = await ai.models.generateContentStream({
-    model: 'gemini-2.5-flash',
-    contents: userPrompt,
-    config: {
-      systemInstruction: systemPrompt,
-    }
+  const anthropicKey = process.env.ANTHROPIC_API_KEY
+  if (!anthropicKey) {
+    return new Response('No AI API key found.', { status: 500 })
+  }
+
+  const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': anthropicKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      stream: true
+    })
   })
 
+  if (!anthropicRes.ok) {
+    const errorBody = await anthropicRes.text()
+    console.error('Anthropic API Error:', errorBody)
+    return new Response('AI API Error', { status: 500 })
+  }
+
   let fullText = ''
+  
   const readableStream = new ReadableStream({
     async start(controller) {
+      if (!anthropicRes.body) return
+      
+      const reader = anthropicRes.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
       try {
-        for await (const chunk of responseStream) {
-          const text = chunk.text
-          if (text) {
-            fullText += text
-            controller.enqueue(new TextEncoder().encode(text))
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6)
+              if (dataStr === '[DONE]') continue
+              try {
+                const event = JSON.parse(dataStr)
+                if (event.type === 'content_block_delta' && event.delta?.text) {
+                  fullText += event.delta.text
+                  // We yield plain text to the client so the frontend logic remains untouched!
+                  controller.enqueue(new TextEncoder().encode(event.delta.text))
+                }
+              } catch (e) {
+                // Ignore parse errors on partial chunks
+              }
+            }
           }
         }
+        
         controller.close()
         
         // Fire and forget store
@@ -81,8 +123,9 @@ Give them 3 ways forward. Be specific, warm, brief.`
           type: 'direction',
           prompt_context: `chapter: ${chapterTitle}`,
           suggestion_text: fullText,
-          model: 'gemini-2.5-flash',
+          model: 'claude-3-haiku-20240307',
         }).then(() => {})
+
       } catch (e) {
         controller.error(e)
       }
