@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, LogOut, Users } from 'lucide-react'
+import { BookOpen, LogOut, Users, Bookmark } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { signOut } from '@/app/actions'
@@ -39,8 +39,13 @@ export default function AppHeader() {
           </span>
         </Link>
         {!isCommunity && (
-          <Link href="/ideas" className="text-xs font-medium transition-colors hover:opacity-70" style={{ color: 'var(--text-secondary)' }}>
-            Ideas Vault
+          <Link 
+            href="/ideas" 
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-105 active:scale-95" 
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)', border: '1px solid var(--accent-border)' }}
+          >
+            <Bookmark size={14} />
+            Ideas
           </Link>
         )}
       </div>
