@@ -38,6 +38,28 @@ export default async function RoomsPage() {
           </TactileButton>
         </form>
       </div>
+      <div className="space-y-4">
+        <h2 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Instant Templates</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {[
+            { name: "ADHD Hyperfocus Sprint", desc: "For when you need immediate dopamine and a ticking clock.", icon: "⚡" },
+            { name: "Silent Reading Hour", desc: "Zero pressure. Just read your research or fellow writers' work.", icon: "📖" },
+            { name: "NaNoWriMo 2k Push", desc: "High stakes. High word count. Get it done.", icon: "🔥" }
+          ].map((template) => (
+            <form key={template.name} action={createRoom}>
+              <input type="hidden" name="name" value={template.name} />
+              <input type="hidden" name="description" value={template.desc} />
+              <button type="submit" className="w-full h-full text-left p-4 rounded-xl transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <div className="text-2xl mb-2">{template.icon}</div>
+                <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{template.name}</h3>
+                <p className="text-xs mt-1 leading-snug opacity-80" style={{ color: 'var(--text-secondary)' }}>{template.desc}</p>
+              </button>
+            </form>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-4 border-t" style={{ borderColor: 'var(--border)' }}></div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {rooms.map((room) => (

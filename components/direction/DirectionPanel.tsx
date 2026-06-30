@@ -199,6 +199,11 @@ export default function DirectionPanel({ chapter, manuscript, userId, onClose }:
 
       {/* Reference spark — only mounts after direction content is ready */}
       {response && !streaming && <ReferenceSpark chapter={chapter} manuscript={manuscript} />}
+
+      {/* AI Disclaimer */}
+      <div className="px-5 pb-5 text-[10px] leading-tight opacity-50" style={{ color: 'var(--text-muted)' }}>
+        <strong>Note:</strong> The AI coach doesn&apos;t write for you; it analyzes your &apos;Writer DNA&apos; to offer stylistic feedback and directional prompts that keep you in the driver&apos;s seat.
+      </div>
     </div>
   )
 }
