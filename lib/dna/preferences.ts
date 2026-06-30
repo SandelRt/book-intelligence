@@ -31,7 +31,7 @@ export async function recordAnnotation(opts: {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getWriterDNASummary(userId: string, supabase: SupabaseClient<any>) {
 
-  const [prefResult, annotResult, signalResult] = await Promise.all([
+  const [prefResult, annotResult, signalResult, profileResult] = await Promise.all([
     supabase
       .from('preference_events')
       .select('action')
@@ -50,6 +50,11 @@ export async function getWriterDNASummary(userId: string, supabase: SupabaseClie
       .eq('user_id', userId)
       .order('computed_at', { ascending: false })
       .limit(10),
+    supabase
+      .from('writer_profiles')
+      .select('writer_dna')
+      .eq('user_id', userId)
+      .single()
   ])
 
   const events = prefResult.data ?? []
@@ -71,5 +76,6 @@ export async function getWriterDNASummary(userId: string, supabase: SupabaseClie
     acceptRate: events.length > 0 ? accepts / events.length : 0,
     recentAnnotations: annotResult.data ?? [],
     style: avgStyle,
+    explicitDNA: profileResult?.data?.writer_dna || {}
   }
 }

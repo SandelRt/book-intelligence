@@ -185,3 +185,42 @@ export async function checkInSession(sessionId: string, formData: FormData) {
 
   redirect(`/sessions/${sessionId}/summary`)
 }
+
+export async function skipOnboarding() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  await supabase
+    .from('writer_profiles')
+    .update({ onboarding_completed: true })
+    .eq('user_id', user.id)
+
+  revalidatePath('/dashboard')
+}
+
+export async function saveWriterDNA(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const tone = formData.get('tone') as string
+  const influences = formData.get('influences') as string
+  const goals = formData.get('goals') as string
+
+  const writer_dna = {
+    tone,
+    influences,
+    goals
+  }
+
+  await supabase
+    .from('writer_profiles')
+    .update({ 
+      onboarding_completed: true,
+      writer_dna
+    })
+    .eq('user_id', user.id)
+
+  redirect('/dashboard')
+}

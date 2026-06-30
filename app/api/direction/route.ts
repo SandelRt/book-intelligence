@@ -22,6 +22,11 @@ export async function POST(req: Request) {
     .filter(Boolean)
     .join('\n- ')
 
+  const explicitDNA = dna.explicitDNA as { tone?: string, influences?: string, goals?: string }
+  const explicitContext = explicitDNA?.tone 
+    ? `The writer specifically described their ideal tone as: ${explicitDNA.tone}. Their main influences are: ${explicitDNA.influences || 'None specified'}. Their current manuscript goal is: ${explicitDNA.goals || 'None specified'}.`
+    : ''
+
   const triggerContext = {
     idle: "The writer has been inactive for a while — they may be stuck or unsure how to continue.",
     delete_loop: "The writer has been deleting the same passage repeatedly — they're not happy with what's on the page.",
@@ -30,6 +35,7 @@ export async function POST(req: Request) {
 
   const systemPrompt = `You are a warm, supportive writing partner. You help novelists find their way forward when they're stuck — never preachy, never generic. You know their story and you know them.
 
+${explicitContext}
 ${styleContext}
 ${recentDislikes ? `Things this writer has marked as "didn't work" recently:\n- ${recentDislikes}` : ''}
 
