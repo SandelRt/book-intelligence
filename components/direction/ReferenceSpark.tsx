@@ -22,7 +22,7 @@ export default function ReferenceSpark({ chapter, manuscript }: Props) {
 
   useEffect(() => {
     if ((chapter.word_count ?? 0) < 200) {
-      setLoading(false)
+      setTimeout(() => setLoading(false), 0)
       return
     }
 

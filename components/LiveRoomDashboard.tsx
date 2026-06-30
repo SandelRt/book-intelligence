@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Send, Users, MessageSquare, CheckCircle2 } from 'lucide-react'
+import { Send, Users, MessageSquare } from 'lucide-react'
+import type { Goal } from '@/types'
+import { RealtimeChannel } from '@supabase/supabase-js'
 
 type PresenceState = {
   user_id: string
@@ -27,7 +29,7 @@ export default function LiveRoomDashboard({
   sessionId: string
   currentUserId: string
   currentUserName: string
-  initialGoals: any[]
+  initialGoals: Goal[]
 }) {
   const [presence, setPresence] = useState<Record<string, PresenceState>>({})
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -35,7 +37,7 @@ export default function LiveRoomDashboard({
   const [goals, setGoals] = useState(initialGoals)
   const chatRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
-  const channelRef = useRef<any>(null)
+  const channelRef = useRef<RealtimeChannel | null>(null)
 
   useEffect(() => {
     const channel = supabase.channel(`session_${sessionId}`, {
@@ -81,11 +83,10 @@ export default function LiveRoomDashboard({
 
     channel.subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
-        const myGoal = goals.find(g => g.user_id === currentUserId)
         await channel.track({
           user_id: currentUserId,
           name: currentUserName,
-          status: myGoal?.completed ? 'done' : 'working'
+          status: 'working'
         })
       }
     })
@@ -94,6 +95,18 @@ export default function LiveRoomDashboard({
       supabase.removeChannel(channel)
     }
   }, [sessionId, currentUserId, currentUserName, supabase])
+
+  useEffect(() => {
+    if (!channelRef.current) return
+    const myGoal = goals.find(g => g.user_id === currentUserId)
+    if (myGoal?.completed) {
+      channelRef.current.track({
+        user_id: currentUserId,
+        name: currentUserName,
+        status: 'done'
+      })
+    }
+  }, [goals, currentUserId, currentUserName])
 
   const sendChat = (e: React.FormEvent) => {
     e.preventDefault()

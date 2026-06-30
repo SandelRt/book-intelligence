@@ -100,7 +100,7 @@ Give them 3 ways forward. Be specific, warm, brief.`
     })
 
     return new Response(readableStream)
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Gemini API Error:', err)
     return new Response('AI API Error', { status: 500 })
   }

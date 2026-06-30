@@ -63,7 +63,9 @@ export default function DirectionPanel({ chapter, manuscript, userId, onClose }:
   }
 
   useEffect(() => {
-    fetchDirection('manual')
+    setTimeout(() => {
+      fetchDirection('manual')
+    }, 0)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFeedback = async (type: 'helped' | 'not-quite') => {

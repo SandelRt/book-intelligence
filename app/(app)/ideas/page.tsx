@@ -16,9 +16,11 @@ export default function IdeasVaultPage() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    const existing = JSON.parse(localStorage.getItem('loopreads_ideas') || '[]')
-    setIdeas(existing.reverse())
+    setTimeout(() => {
+      setMounted(true)
+      const existing = JSON.parse(localStorage.getItem('loopreads_ideas') || '[]')
+      setIdeas(existing.reverse())
+    }, 0)
   }, [])
 
   const handleDelete = (id: number) => {

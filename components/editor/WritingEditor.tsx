@@ -247,7 +247,7 @@ export default function WritingEditor({
 
   // Start timers on mount
   useEffect(() => {
-    resetIdleTimers()
+    setTimeout(() => resetIdleTimers(), 0)
     return () => {
       if (saveTimer.current)   clearTimeout(saveTimer.current)
       if (wcTimer.current)     clearTimeout(wcTimer.current)

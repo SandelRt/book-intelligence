@@ -27,12 +27,12 @@ export default function LandingPage() {
             Live Accountability
           </div>
           <h2 className="text-5xl font-medium leading-tight" style={{ fontFamily: 'var(--font-prose)', color: 'var(--text-primary)' }}>
-            You don't lack discipline.<br />
+            You don&apos;t lack discipline.<br />
             <em style={{ color: 'var(--text-secondary)' }}>You lack a room.</em>
           </h2>
           <p className="text-base leading-relaxed max-w-sm" style={{ color: 'var(--text-secondary)' }}>
             Join a live session, set one clear goal, and finish it together. 
-            An AI coach learns what keeps you consistent and steps in when you're stuck.
+            An AI coach learns what keeps you consistent and steps in when you&apos;re stuck.
           </p>
           <div className="pt-4">
             <Link href="/login">
