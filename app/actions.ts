@@ -7,10 +7,17 @@ export async function signInWithMagicLink(formData: FormData) {
   const email = formData.get('email') as string
   const supabase = await createClient()
 
+  let siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 
+                process.env.VERCEL_PROJECT_PRODUCTION_URL || 
+                process.env.VERCEL_URL || 
+                'http://localhost:3000'
+                
+  siteUrl = siteUrl.startsWith('http') ? siteUrl : `https://${siteUrl}`
+
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/auth/callback`,
+      emailRedirectTo: `${siteUrl}/auth/callback`,
     },
   })
 
