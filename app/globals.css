@@ -18,11 +18,20 @@
   --text-muted:     #5a5244;
   --text-faint:     #3a342c;
 
-  /* Accent — warm violet -> switched to Fidget Science Neon Green */
-  --accent:       #25E892;
-  --accent-dim:   rgba(37, 232, 146, 0.12);
-  --accent-border: rgba(37, 232, 146, 0.22);
-  --accent-primary: #25E892;
+  /* Mode Accents */
+  --accent-loopreads: #25E892;
+  --accent-loopreads-dim: rgba(37, 232, 146, 0.12);
+  --accent-loopreads-border: rgba(37, 232, 146, 0.22);
+  
+  --accent-studio: #f9a826;
+  --accent-studio-dim: rgba(249, 168, 38, 0.12);
+  --accent-studio-border: rgba(249, 168, 38, 0.22);
+
+  /* Current Active Accent (defaults to Studio) */
+  --accent:       var(--accent-studio);
+  --accent-dim:   var(--accent-studio-dim);
+  --accent-border: var(--accent-studio-border);
+  --accent-primary: var(--accent);
 
   /* Physical Depth Shadows (Dark Mode Default) */
   --shadow-dark: rgba(0, 0, 0, 0.8);
