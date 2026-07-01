@@ -9,12 +9,12 @@ const lora = Lora({
 })
 
 export const metadata: Metadata = {
-  title: 'LoopLang',
+  title: 'Book Intelligence',
   description: 'Your writing, amplified by AI that learns you.',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'LoopLang',
+    title: 'Book Intel',
   },
 }
 

@@ -11,7 +11,7 @@ export default function LandingPage() {
             📖
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-none" style={{ color: 'var(--text-primary)' }}>LoopLang</h1>
+            <h1 className="font-bold text-lg leading-none" style={{ color: 'var(--text-primary)' }}>LoopReads</h1>
             <p className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: 'var(--text-muted)' }}>The gym for reading & writing</p>
           </div>
         </div>

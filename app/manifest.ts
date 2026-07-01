@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'LoopLang',
-    short_name: 'LoopLang',
+    name: 'Book Intelligence',
+    short_name: 'Book Intel',
     description: 'The AI-powered gamified writing studio.',
     start_url: '/dashboard',
     display: 'standalone',
