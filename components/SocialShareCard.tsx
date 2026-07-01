@@ -28,7 +28,7 @@ export default function SocialShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 })
       const link = document.createElement('a')
-      link.download = 'book-intelligence-sprint.png'
+      link.download = 'looplang-sprint.png'
       link.href = dataUrl
       link.click()
     } catch (err) {
@@ -36,7 +36,7 @@ export default function SocialShareCard({
     }
   }
 
-  const shareText = `Just crushed ${actualAmount} ${goalType} in my writing sprint! ✍️🔥\n\nLeveling up my Writer DNA on Book Intelligence.`
+  const shareText = `Just crushed ${actualAmount} ${goalType} in my writing sprint! ✍️🔥\n\nLeveling up my Writer DNA on LoopLang.`
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
 
   return (
@@ -55,7 +55,7 @@ export default function SocialShareCard({
         {/* Top Header */}
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="font-bold tracking-tight text-left" style={{ color: 'var(--text-primary)' }}>Book Intelligence</span>
+            <span className="font-bold tracking-tight text-left" style={{ color: 'var(--text-primary)' }}>LoopLang</span>
             <span className="text-xs tracking-widest uppercase font-bold text-left" style={{ color: 'var(--text-muted)' }}>Session Complete</span>
           </div>
           {completed && (
